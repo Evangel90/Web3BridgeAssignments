@@ -1,20 +1,17 @@
 const crypto = require('crypto');
 
-// Keccak256 hash function (functional)
 const keccak256 = (data) => {
   const hash = crypto.createHash('sha256');
   hash.update(data.toString());
-  return hash.digest('hex').slice(0, 16); // Short hash for readability
+  return hash.digest('hex').slice(0, 16);
 };
 
-// Create leaf node (functional)
 const createLeaf = (data) => ({
   type: 'leaf',
   data,
   hash: keccak256(data),
 });
 
-// Create branch node (functional)
 const createBranch = (left, right) => ({
   type: 'branch',
   left,
@@ -22,15 +19,12 @@ const createBranch = (left, right) => ({
   hash: keccak256(`${left.hash}${right.hash}`),
 });
 
-// Build merkle tree recursively (functional)
 const buildMerkleTree = (nodes) => {
   if (nodes.length === 0) return null;
   if (nodes.length === 1) return nodes[0];
 
-  // Pad nodes to even length
   const paddedNodes = nodes.length % 2 === 0 ? nodes : [...nodes, nodes[nodes.length - 1]];
 
-  // Create branch pairs (functional approach)
   const branches = paddedNodes.reduce((acc, node, i) => {
     if (i % 2 === 0) {
       acc.push(createBranch(node, paddedNodes[i + 1]));
@@ -38,11 +32,9 @@ const buildMerkleTree = (nodes) => {
     return acc;
   }, []);
 
-  // Recursively build tree until single root
   return branches.length === 1 ? branches[0] : buildMerkleTree(branches);
 };
 
-// Count tree depth (functional)
 const getDepth = (node, currentDepth = 0) => {
   if (!node || node.type === 'leaf') return currentDepth;
   return Math.max(
@@ -51,7 +43,7 @@ const getDepth = (node, currentDepth = 0) => {
   );
 };
 
-// Generate visual diagram (functional)
+
 const generateDiagram = (node, prefix = '', isLeft = null) => {
   if (!node) return '';
 
@@ -69,7 +61,6 @@ const generateDiagram = (node, prefix = '', isLeft = null) => {
   return `${prefix}${nodeInfo}\n${leftDiagram}${rightDiagram}`;
 };
 
-// Print merkle tree structure (functional)
 const printMerkleTree = (nodes) => {
   const tree = buildMerkleTree(nodes.map(createLeaf));
   
@@ -90,33 +81,5 @@ const printMerkleTree = (nodes) => {
   return tree;
 };
 
-// Example usage
-const data = ['Block1', 'Block2', 'Block3', 'Block4'];
-const merkleTree = printMerkleTree(data);
-
-// Additional utility: Verify leaf in merkle tree (functional)
-const verifyLeaf = (tree, leafData, path = []) => {
-  if (!tree) return false;
-  if (tree.type === 'leaf') {
-    return tree.data === leafData;
-  }
-
-  const leftValid = verifyLeaf(tree.left, leafData, [...path, 'L']);
-  const rightValid = verifyLeaf(tree.right, leafData, [...path, 'R']);
-
-  return leftValid || rightValid;
-};
-
-console.log(`Verifying "Block2" in tree: ${verifyLeaf(merkleTree, 'Block2')}`);
-console.log(`Verifying "Block5" in tree: ${verifyLeaf(merkleTree, 'Block5')}`);
-
-module.exports = {
-  keccak256,
-  createLeaf,
-  createBranch,
-  buildMerkleTree,
-  printMerkleTree,
-  verifyLeaf,
-  getDepth,
-  generateDiagram,
-};
+const data = ['Tnx1', 'Tnx2', 'Tnx3', 'Tnx4', 'Tnx5', 'Tnx6', 'Tnx7', 'Tnx8'];
+printMerkleTree(data);
