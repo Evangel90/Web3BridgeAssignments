@@ -70,9 +70,10 @@ function gcdRecursive(a, b) {
 
 // Test cases
 console.log("=== Euclidean Algorithm - GCD Calculation ===\n");
+16261, 85652
 
 const testCases = [
-  { a: 48, b: 18 },
+  { a: 16261, b: 85652 },
   { a: 100, b: 50 },
   { a: 17, b: 19 },
   { a: 1071, b: 462 },
